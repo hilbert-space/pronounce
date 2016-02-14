@@ -51,4 +51,10 @@ File.delete(swf)
 
 execute(play, '-q', mp3)
 
-File.delete(mp3)
+if ARGV.length == 1
+  File.delete(mp3)
+else
+  new_mp3 = File.join(Dir.pwd, "#{name}.mp3")
+  FileUtils.mv(mp3, new_mp3)
+  puts new_mp3
+end
