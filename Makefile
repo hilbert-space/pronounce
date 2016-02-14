@@ -3,4 +3,7 @@ export BIN := $(shell pwd)/bin
 vendor:
 	$(MAKE) -C vendor
 
-.PHONY: vendor
+clean:
+	$(MAKE) -C vendor clean
+
+.PHONY: vendor clean
