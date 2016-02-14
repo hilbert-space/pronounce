@@ -1,2 +1,3 @@
-root
-vendor/swftools
+Gemfile.lock
+bin/swf*
+vendor/swf*

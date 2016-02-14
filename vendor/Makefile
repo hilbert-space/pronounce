@@ -1,4 +1,4 @@
-$(BIN)/swfdump:
+$(BIN)/swfextract:
 	cd swftools && ./configure
 	$(MAKE) -C swftools
-	cp swftools/src/swfdump $@
+	cp swftools/src/swfextract $@
