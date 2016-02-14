@@ -4,11 +4,21 @@ require 'fileutils'
 require 'json'
 require 'nokogiri'
 require 'open-uri'
+require 'open3'
 require 'tmpdir'
+
+def execute(*args)
+  i, o, e, w = Open3.popen3(*args)
+  w.value
+end
 
 extract = File.join(File.expand_path(File.dirname(__FILE__)), 'swfextract')
 
 raise 'failed to find swfextract' unless File.exist?(extract)
+
+play = File.join(File.expand_path(File.dirname(__FILE__)), 'mpg123')
+
+raise 'failed to find mpg123' unless File.exist?(play)
 
 raise 'a word is required' if ARGV.length < 1
 
@@ -35,8 +45,10 @@ open(uri) do |remote|
   end
 end
 
-`#{extract} --mp3 --output #{mp3} #{swf}`
+execute(extract, '--mp3', '--output', mp3, swf)
 
 File.delete(swf)
 
-puts mp3
+execute(play, '-q', mp3)
+
+File.delete(mp3)
