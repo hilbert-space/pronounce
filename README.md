@@ -7,7 +7,6 @@ A command-line tool for pronouncing Swedish words using the database of the
 
 ```bash
 make
-bundle
 ```
 
 For convenience of invocation, add the `bin` directory to your `PATH`:
