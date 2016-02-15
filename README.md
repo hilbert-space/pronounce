@@ -36,7 +36,7 @@ end run
 ```
 
 * save the service,
-* open System Preference,
+* open System Preferences,
 * go to Keyboard → Shortcuts → Services, and
 * look for your service and add a shortcut.
 
