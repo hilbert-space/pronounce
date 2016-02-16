@@ -38,6 +38,6 @@ end run
 * save the service,
 * open System Preferences,
 * go to Keyboard → Shortcuts → Services, and
-* look for your service and add a shortcut.
+* look for your service and add a shortcut, for instance, ⌃⌘P.
 
 [folkets]: http://folkets-lexikon.csc.kth.se/folkets/folkets.html
