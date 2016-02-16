@@ -15,9 +15,9 @@ For convenience of invocation, add the `bin` directory to your `PATH`:
 echo "export PATH=\$PATH:`pwd`/bin" >> ~/.bash_profile
 ```
 
-On OS X, one can also assign a shortcut to the tool so that a selected word can
-be looked up a single keystroke regardless of the active application. To this
-end,
+On OS X, one can also assign a shortcut to the tool so that, regardless of the
+active application, a selected word can be easily looked up using a single
+keystroke. To this end,
 
 * open Automator,
 * select “Service” as the document type,
