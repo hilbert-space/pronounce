@@ -31,16 +31,16 @@ elements = page.css('a[href*=swf]')
 
 raise 'failed to find the word' if elements.empty?
 
-uri = elements[0].attributes['href']
+uri = elements[0].attributes['href'].to_s
 
-raise 'failed to detect the name' unless /(\w+)\.swf/ =~ uri
+raise 'failed to detect the name' unless /([\s\w]+)\.swf/ =~ uri
 
 name = $1
 
 swf = File.join(Dir.tmpdir, "#{name}.swf")
 mp3 = File.join(Dir.tmpdir, "#{name}.mp3")
 
-open(uri) do |remote|
+open(URI.escape(uri)) do |remote|
   open(swf, 'w') do |local|
     local.write(remote.read)
   end
