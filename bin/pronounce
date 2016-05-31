@@ -64,4 +64,4 @@ else
   puts new_mp3
 end
 
-puts("[#{text}]")
+puts("[#{text}]") unless text.nil?
