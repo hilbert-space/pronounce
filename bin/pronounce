@@ -27,21 +27,24 @@ uri = "http://folkets-lexikon.csc.kth.se/folkets/service?word=#{URI.escape(word)
 
 page = Nokogiri::HTML(open(uri).read)
 
-uris = page.css('a[href*=swf]').map { |element| element.attributes['href'].to_s }
-uris = uris.select { |url| url =~ /sound/ }
+items = page.css('a[href*=swf]').map do |element|
+  text = element.parent.text =~ /Uttal: \[([^\]]*)\]/ ? $1 : nil
+  href = element.attributes['href'].to_s
+  href =~ /sound/ ? [text, href] : nil
+end.compact
 
-raise 'failed to find the word' if uris.empty?
+raise 'failed to find the word' if items.empty?
 
-uri = uris[ARGV.length > 0 && ARGV[0] =~ /^\d+$/ ? ARGV.shift.to_i : 0]
+text, href = items[ARGV.length > 0 && ARGV[0] =~ /^\d+$/ ? ARGV.shift.to_i : 0]
 
-raise 'failed to detect the name' unless /([\s\w]+)\.swf/ =~ uri
+raise 'failed to detect the name' unless /([\s\w]+)\.swf/ =~ href
 
 name = $1
 
 swf = File.join(Dir.tmpdir, "#{name}.swf")
 mp3 = File.join(Dir.tmpdir, "#{name}.mp3")
 
-open(URI.escape(uri)) do |remote|
+open(URI.escape(href)) do |remote|
   open(swf, 'w') do |local|
     local.write(remote.read)
   end
@@ -60,3 +63,5 @@ else
   FileUtils.mv(mp3, new_mp3)
   puts new_mp3
 end
+
+puts("[#{text}]")
