@@ -61,7 +61,6 @@ if ARGV.empty?
 else
   new_mp3 = File.join(Dir.pwd, "#{name}.mp3")
   FileUtils.mv(mp3, new_mp3)
-  puts new_mp3
+  puts("Read: [#{text}]") unless text.nil?
+  puts("Play: #{new_mp3}")
 end
-
-puts("[#{text}]") unless text.nil?
