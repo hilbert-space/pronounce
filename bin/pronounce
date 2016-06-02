@@ -54,13 +54,24 @@ execute(extract, '--mp3', '--output', mp3, swf)
 
 File.delete(swf)
 
-execute(play, '-q', mp3)
+interactive = !ARGV.empty?
 
-if ARGV.empty?
-  File.delete(mp3)
-else
+if interactive
   new_mp3 = File.join(Dir.pwd, "#{name}.mp3")
   FileUtils.mv(mp3, new_mp3)
-  puts("Read: [#{text}]") unless text.nil?
-  puts("Play: #{new_mp3}")
+  mp3 = new_mp3
 end
+
+if interactive
+  puts("Text: [#{text}]") unless text.nil?
+  puts("Sound: #{mp3}")
+end
+
+execute(play, '-q', mp3)
+
+if interactive
+  print("Delete the sound file? ")
+  exit if STDIN.gets =~ /^n/i
+end
+
+File.delete(mp3)
