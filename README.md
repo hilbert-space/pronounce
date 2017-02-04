@@ -5,14 +5,16 @@ Dictionary][folkets].
 
 ## Installation
 
+Clone the repository and then run:
+
 ```bash
 make
 ```
 
-For convenience of invocation, add the `bin` directory to your `PATH`:
+For convenience of invocation, add an alias to your `.bash_profile`:
 
 ```bash
-echo "export PATH=\$PATH:`pwd`/bin" >> ~/.bash_profile
+echo "alias pronounce='`pwd`/bin/pronounce'" >> ~/.bash_profile
 ```
 
 On macOS, one can also assign a shortcut to the tool so that, regardless of the
@@ -26,8 +28,8 @@ keystroke. To this end,
 
 ```applescript
 on run {input, parameters}
-	set pronounce to "[LOCAL_PATH_TO_THIS_REPOSITORY]/bin/pronounce"
-	set command to pronounce & " " & input
+	set pronounce to "<PATH TO THIS REPOSITORY>"
+	set command to pronounce & "/bin/pronounce " & input
 	try
 		do shell script command
 	end try
