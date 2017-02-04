@@ -1,7 +1,7 @@
 # Pronounce
 
-A command-line tool for pronouncing Swedish words using the database of the
-[People’s Dictionary][folkets].
+A tool for pronouncing Swedish words using the database of the [People’s
+Dictionary][folkets].
 
 ## Installation
 
