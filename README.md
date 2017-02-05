@@ -14,7 +14,7 @@ make
 For convenience of invocation, add an alias to your `.bash_profile`:
 
 ```bash
-echo "alias pronounce='`pwd`/bin/pronounce'" >> ~/.bash_profile
+echo "alias pronounce='${PWD}/bin/pronounce'" >> ~/.bash_profile
 ```
 
 On macOS, one can also assign a shortcut to the tool so that, regardless of the
