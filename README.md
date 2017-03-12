@@ -11,7 +11,7 @@ Clone the repository and then run:
 make
 ```
 
-# Usage
+## Usage
 
 ```bash
 ./bin/pronounce hej
