@@ -11,6 +11,12 @@ Clone the repository and then run:
 make
 ```
 
+# Usage
+
+```bash
+./bin/pronounce hej
+```
+
 For convenience of invocation, add an alias to your `.bash_profile`:
 
 ```bash
