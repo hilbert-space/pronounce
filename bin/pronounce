@@ -7,58 +7,49 @@ require 'open-uri'
 require 'open3'
 require 'tmpdir'
 
-def execute(*args)
-  i, o, e, w = Open3.popen3(*args)
+def execute(*arguments)
+  i, o, e, w = Open3.popen3(*arguments)
   w.value
 end
 
-extract = File.join(File.expand_path(File.dirname(__FILE__)), 'swfextract')
-
-raise 'failed to find swfextract' unless File.exist?(extract)
-
-play = File.join(File.expand_path(File.dirname(__FILE__)), 'mpg123')
-
-raise 'failed to find mpg123' unless File.exist?(play)
+def query_folkets(word, number)
+  uri = "http://folkets-lexikon.csc.kth.se/folkets/service?word=#{URI.escape(word)}"
+  page = Nokogiri::HTML(open(uri).read)
+  items = page.css('a[href*=swf]').map do |element|
+    text = element.parent.text =~ /Uttal: \[([^\]]*)\]/ ? $1 : nil
+    href = element.attributes['href'].to_s
+    href =~ /sound/ ? [text, href] : nil
+  end.compact
+  raise 'failed to find the word' if items.empty?
+  text, href = items[number]
+  raise 'failed to find the word' if href.nil?
+  flash = File.join(Dir.tmpdir, "#{word}.swf")
+  sound = File.join(Dir.tmpdir, "#{word}.mp3")
+  open(URI.escape(href)) do |remote|
+    open(flash, 'w') do |local|
+      local.write(remote.read)
+    end
+  end
+  extract = File.join(File.expand_path(File.dirname(__FILE__)), 'swfextract')
+  raise 'failed to find swfextract' unless File.exist?(extract)
+  execute(extract, '--mp3', '--output', sound, flash)
+  File.delete(flash)
+  [sound, text]
+end
 
 raise 'a word is required' if ARGV.length < 1
-
 word = ARGV.shift.strip.downcase
-uri = "http://folkets-lexikon.csc.kth.se/folkets/service?word=#{URI.escape(word)}"
+number = ARGV.length > 0 && ARGV[0] =~ /^\d+$/ ? ARGV.shift.to_i : 0
+persist = !ARGV.empty?
 
-page = Nokogiri::HTML(open(uri).read)
-
-items = page.css('a[href*=swf]').map do |element|
-  text = element.parent.text =~ /Uttal: \[([^\]]*)\]/ ? $1 : nil
-  href = element.attributes['href'].to_s
-  href =~ /sound/ ? [text, href] : nil
-end.compact
-
-raise 'failed to find the word' if items.empty?
-
-text, href = items[ARGV.length > 0 && ARGV[0] =~ /^\d+$/ ? ARGV.shift.to_i : 0]
-
-raise 'failed to detect the name' unless /([\s\w]+)\.swf/ =~ href
-
-name = $1
-
-swf = File.join(Dir.tmpdir, "#{name}.swf")
-mp3 = File.join(Dir.tmpdir, "#{name}.mp3")
-
-open(URI.escape(href)) do |remote|
-  open(swf, 'w') do |local|
-    local.write(remote.read)
-  end
-end
-
-execute(extract, '--mp3', '--output', mp3, swf)
-
-File.delete(swf)
-
-if !ARGV.empty?
+sound, text = query_folkets(word, number)
+if persist
   puts("[#{text}]") unless text.nil?
-  new_mp3 = File.join(Dir.pwd, "#{name}.mp3")
-  FileUtils.mv(mp3, new_mp3)
-  mp3 = new_mp3
+  new_sound = File.join(Dir.pwd, "#{word}.mp3")
+  FileUtils.mv(sound, new_sound)
+  sound = new_sound
 end
 
-execute(play, '-q', mp3)
+play = File.join(File.expand_path(File.dirname(__FILE__)), 'mpg123')
+raise 'failed to find mpg123' unless File.exist?(play)
+execute(play, '-q', sound)
